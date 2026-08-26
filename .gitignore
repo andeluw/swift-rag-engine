@@ -84,3 +84,7 @@ fastlane/test_output/
 # --------------------------------------------------
 *.swp
 *~
+
+.venv-coreml/
+BuildArtifacts/
+*.mlpackage/
