@@ -44,7 +44,7 @@ enum BGEEmbeddingDemo {
                 attentionMask: documentInput.attentionMask
             )
 
-            let similarity = cosineSimilarity(
+            let similarity = CosineSimilarity.calculate(
                 queryEmbedding,
                 documentEmbedding
             )
@@ -58,34 +58,12 @@ enum BGEEmbeddingDemo {
             $0.similarity > $1.similarity
         }
 
+        print("BGE Embedding")
         print("Query:", query)
         print()
 
         for result in results {
             print(result.similarity, result.document)
         }
-    }
-
-    private static func cosineSimilarity(
-        _ a: [Float],
-        _ b: [Float]
-    ) -> Float {
-        let dotProduct = zip(a, b).reduce(Float(0)) {
-            $0 + ($1.0 * $1.1)
-        }
-
-        let normA = sqrt(
-            a.reduce(Float(0)) {
-                $0 + ($1 * $1)
-            }
-        )
-
-        let normB = sqrt(
-            b.reduce(Float(0)) {
-                $0 + ($1 * $1)
-            }
-        )
-
-        return dotProduct / (normA * normB)
     }
 }

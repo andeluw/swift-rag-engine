@@ -16,6 +16,18 @@ struct ContentView: View {
                 } catch {
                     print("BGE demo error: \(error)")
                 }
+
+                do {
+                    try await EmbeddingGemmaMLXDemo.run()
+                } catch {
+                    print("EmbeddingGemma MLX demo error: \(error)")
+                }
+
+                do {
+                    try await EmbeddingGemmaCoreMLDemo.run()
+                } catch {
+                    print("EmbeddingGemma CoreML demo error: \(error)")
+                }
             }
     }
 }

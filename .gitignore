@@ -48,6 +48,7 @@ __pycache__/
 
 .venv/
 venv/
+.venv*/
 
 .pytest_cache/
 .mypy_cache/
@@ -85,6 +86,5 @@ fastlane/test_output/
 *.swp
 *~
 
-.venv-coreml/
 BuildArtifacts/
 *.mlpackage/
