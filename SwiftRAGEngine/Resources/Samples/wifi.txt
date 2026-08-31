@@ -1,0 +1,12 @@
+Wi-Fi connections can become unstable for several reasons. A device may be too far from the router, walls can weaken the signal, and nearby wireless networks may compete for the same channel. Temporary interference can also come from Bluetooth devices, microwave ovens, or other electronics that use similar radio frequencies.
+
+A weak signal does not always mean the internet connection itself is slow. The local wireless link between the device and the router may be unstable even when the internet service from the provider is working normally. Moving closer to the router can help determine whether signal strength is part of the problem.
+
+Routers often choose wireless channels automatically, but the selected channel may become crowded over time. In an apartment building, many nearby routers may use overlapping channels. When several networks compete for the same wireless spectrum, devices may experience higher latency, reduced throughput, or repeated disconnections. Restarting the router can sometimes cause it to select a less congested channel, but this does not guarantee a permanent fix. Manually inspecting channel usage can provide a clearer diagnosis. On the 2.4 GHz band, channels overlap more heavily, while the 5 GHz band usually provides more non-overlapping choices but shorter range. Device compatibility also matters because older hardware may not support newer wireless standards or bands.
+
+Power-saving features can affect Wi-Fi behavior on some devices. A laptop or phone may reduce wireless activity when it enters a low-power state. If disconnections happen mainly after the device has been idle, checking power and network settings can help isolate the cause.
+
+Another possible cause is router software. Firmware bugs, outdated settings, or a router that has been running for a long time can produce unstable behavior. Restarting the router is a useful short-term diagnostic step, while installing a stable firmware update may address known issues.
+
+A useful troubleshooting process is to change one variable at a time. First, test the device close to the router. Then compare another device on the same network. If only one device disconnects, the issue may be device-specific. If every device disconnects, the router, local network, or internet connection becomes a more likely cause.
+

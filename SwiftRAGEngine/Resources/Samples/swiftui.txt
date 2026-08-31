@@ -1,0 +1,10 @@
+SwiftUI is a declarative user interface framework. Instead of directly telling the interface how to change step by step, an app describes what the interface should look like for the current state. When that state changes, SwiftUI evaluates the relevant views again and updates the rendered interface.
+
+A SwiftUI view is usually a lightweight value that describes part of the interface. The body property returns another view description. SwiftUI uses these descriptions together with identity and state information to determine what needs to appear on screen.
+
+State drives interface updates. Properties managed with tools such as @State, @Binding, or the Observation framework can participate in the data flow of an application. When observed state changes, SwiftUI invalidates affected view computations and reevaluates the necessary parts of the view hierarchy. This does not mean that every visible element is destroyed and recreated as a platform view each time. SwiftUI compares the new description with the existing rendered state and performs the updates required to make the interface match the latest data. Stable identity is important because it helps SwiftUI understand whether a view represents the same logical element across updates. Lists are a common example: meaningful identifiers allow rows to preserve state and animate predictably when data changes.
+
+Bindings allow one view to read and write state owned elsewhere. A binding does not usually store a separate copy of the value. Instead, it provides controlled access to an existing source of truth.
+
+Keeping state close to the part of the interface that owns it can make SwiftUI code easier to reason about. Shared application data may live in a model or observable object, while short-lived presentation state can remain local to a view.
+

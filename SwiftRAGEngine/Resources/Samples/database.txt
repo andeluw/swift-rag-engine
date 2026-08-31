@@ -1,0 +1,10 @@
+A relational database stores information in tables made of rows and columns. Tables can be connected through keys, allowing an application to represent relationships between entities such as users, orders, products, or payments.
+
+A database index is an additional data structure that helps the database locate rows more efficiently. Without a useful index, a query may need to examine many rows in a table. With an appropriate index, the database can often reduce the amount of data it must scan.
+
+Indexes are not automatically beneficial for every query. The database query planner considers available indexes, table statistics, filtering conditions, join conditions, ordering, and the estimated cost of different execution strategies. A highly selective condition may benefit strongly from an index because only a small portion of the table needs to be visited. In contrast, if a query returns most of the rows, scanning the table directly can be cheaper. Composite indexes can support queries involving multiple columns, but column order matters because an index is organized according to its defined key sequence. Covering indexes can sometimes allow a query to retrieve required values directly from the index without reading the underlying table rows.
+
+Indexes also have costs. They consume storage, and the database must maintain them when rows are inserted, updated, or deleted. Creating too many indexes can therefore increase write overhead.
+
+When a query is slow, an execution plan can help explain what the database is doing. Developers can inspect whether the database is performing a sequential scan, an index scan, a join strategy, or an expensive sort. Index design should be guided by real query patterns rather than by adding an index to every column.
+

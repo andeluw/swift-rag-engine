@@ -81,6 +81,14 @@ struct RAGGenerator {
 struct RAGResponse {
     let answer: String
     let hasSufficientContext: Bool
+    
+    var displayAnswer: String {
+        if hasSufficientContext {
+            return answer
+        }
+        
+        return "The provided documents don't contain enough information to answer this question."
+    }
 }
 
 enum RAGGeneratorError: Error {
