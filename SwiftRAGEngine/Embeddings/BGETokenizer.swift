@@ -30,6 +30,10 @@ final class BGETokenizer {
             modelFolder: tokenizerFolder
         )
     }
+    
+    func tokenCount(_ text: String) -> Int {
+        tokenizer.encode(text: text).count
+    }
 
     func encode(_ text: String) -> BGETokenizedInput {
         var tokenIDs = tokenizer.encode(text: text)
