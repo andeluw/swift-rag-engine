@@ -10,13 +10,18 @@ import FoundationModels
 
 struct RAGGenerator {
     private let model: SystemLanguageModel
-    private let session: LanguageModelSession
     
     init() {
-        let model = SystemLanguageModel.default
+        model = SystemLanguageModel.default
+    }
+    
+    func generate(
+        question: String,
+        context: String
+    ) async throws -> GeneratedAnswer {
+        try checkAvailability()
         
-        self.model = model
-        self.session = LanguageModelSession(
+        let session = LanguageModelSession(
             model: model,
             instructions: """
                 Answer the user's question using only the provided context.
@@ -28,13 +33,6 @@ struct RAGGenerator {
                 If the provided context does not support an answer, state that the context is insufficient.
                 """
         )
-    }
-    
-    func generate(
-        question: String,
-        context: String
-    ) async throws -> GeneratedAnswer {
-        try checkAvailability()
         
         let prompt = """
             Context:
@@ -56,7 +54,7 @@ struct RAGGenerator {
     private func checkAvailability() throws {
         switch model.availability {
         case .available:
-            print("Foundation Model available")
+            break
             
         case .unavailable(.appleIntelligenceNotEnabled):
             throw RAGGeneratorError.appleIntelligenceNotEnabled

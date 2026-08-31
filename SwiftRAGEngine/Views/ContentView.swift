@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var viewModel = RAGViewModel()
+
     var body: some View {
-        Text("Swift RAG Engine")
-            .task {
-                await ExampleRunner.run()
-            }
+        ChatView(viewModel: viewModel)
     }
 }
 
