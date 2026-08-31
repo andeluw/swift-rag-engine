@@ -11,29 +11,7 @@ struct ContentView: View {
     var body: some View {
         Text("Swift RAG Engine")
             .task {
-//                do {
-//                    try await BGEEmbeddingDemo.run()
-//                } catch {
-//                    print("BGE demo error: \(error)")
-//                }
-//
-//                do {
-//                    try await EmbeddingGemmaMLXDemo.run()
-//                } catch {
-//                    print("EmbeddingGemma MLX demo error: \(error)")
-//                }
-//
-//                do {
-//                    try await EmbeddingGemmaCoreMLDemo.run()
-//                } catch {
-//                    print("EmbeddingGemma CoreML demo error: \(error)")
-//                }
-                
-                do {
-                    try await RAGDemo.run()
-                } catch {
-                    print(error)
-                }
+                await ExampleRunner.run()
             }
     }
 }

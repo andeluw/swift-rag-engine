@@ -1,5 +1,5 @@
 //
-//  EmbeddingGemmaMLXDemo.swift
+//  EmbeddingGemmaMLXExample.swift
 //  SwiftRAGEngine
 //
 //  Created by Andrew Wallace on 27/08/26.
@@ -13,7 +13,7 @@ import MLXHuggingFace
 import HuggingFace
 import Tokenizers
 
-enum EmbeddingGemmaMLXDemo {
+enum EmbeddingGemmaMLXExample {
     static func run() async throws {
         let configuration = ModelConfiguration(
             id: "mlx-community/embeddinggemma-300m-8bit"

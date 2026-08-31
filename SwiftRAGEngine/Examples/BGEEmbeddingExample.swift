@@ -1,5 +1,5 @@
 //
-//  BGEEmbeddingDemo.swift
+//  BGEEmbeddingExample.swift
 //  SwiftRAGEngine
 //
 //  Created by Andrew Wallace on 27/08/26.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum BGEEmbeddingDemo {
+enum BGEEmbeddingExample {
     static func run() async throws {
         let tokenizer = try await BGETokenizer()
         let model = try BGEEmbeddingModel()

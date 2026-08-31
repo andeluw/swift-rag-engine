@@ -1,5 +1,5 @@
 //
-//  EmbeddingGemmaCoreMLDemo.swift
+//  EmbeddingGemmaCoreMLExample.swift
 //  SwiftRAGEngine
 //
 //  Created by Andrew Wallace on 27/08/26.
@@ -8,7 +8,7 @@
 import CoreMLLLM
 import Foundation
 
-enum EmbeddingGemmaCoreMLDemo {
+enum EmbeddingGemmaCoreMLExample {
     static func run() async throws {
         let modelsDirectory = FileManager.default
             .urls(

@@ -1,5 +1,5 @@
 //
-//  RAGDemo.swift
+//  RAGExample.swift
 //  SwiftRAGEngine
 //
 //  Created by Andrew Wallace on 29/08/26.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum RAGDemo {
+enum RAGExample {
     static func run() async throws {
         let documentText = """
             Wi-Fi connections can become unstable when a device is far from the router. Thick walls, floors, and other physical obstacles can weaken the wireless signal. Interference from nearby routers and electronic devices may also cause frequent disconnections. Moving closer to the router or changing the wireless channel can improve connection stability.
