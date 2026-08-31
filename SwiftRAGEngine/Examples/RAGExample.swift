@@ -20,24 +20,27 @@ enum RAGExample {
             """
 
         let query = "Why does my Wi-Fi keep disconnecting?"
-//        let query = "How does SwiftUI update the interface?"
-//        let query = "What nutrients are found in bananas?"
-//        let query = "How can database indexes improve performance?"
-        
-//        let query = "What is capital city of France?"
+        //        let query = "How does SwiftUI update the interface?"
+        //        let query = "What nutrients are found in bananas?"
+        //        let query = "How can database indexes improve performance?"
 
-        let queryInstruction =
-            "Represent this sentence for searching relevant passages: "
+        //        let query = "What is capital city of France?"
 
-        let tokenizer = try await BGETokenizer()
-        let model = try BGEEmbeddingModel()
+        // EmbeddingGemma
+        let embedder: any EmbeddingProvider = try await EmbeddingGemmaProvider()
+        let tokenCounter: any TokenCounter =
+            try await EmbeddingGemmaTokenCounter()
 
-        var embeddedChunks: [EmbeddedChunk] = []
+        // BGE
+        //        let embedder: any EmbeddingProvider = try await BGEEmbeddingProvider()
+        //        let tokenCounter: any TokenCounter = try await BGETokenCounter()
+
+        // Chunk document
 
         let chunker = TextChunker(
             targetTokens: 100,
-            maxTokens: 128,
-            tokenCount: tokenizer.tokenCount
+            maxTokens: tokenCounter.maxTokens,
+            tokenCount: { tokenCounter.count($0) }
         )
 
         let chunks = chunker.chunk(
@@ -45,44 +48,64 @@ enum RAGExample {
             source: "sample.txt"
         )
 
-        for chunk in chunks {
-            let input = tokenizer.encode(chunk.text)
+        // Embed chunks
+        var embeddedChunks: [EmbeddedChunk] = []
 
-            let embedding = try model.embed(
-                inputIDs:
-                    input.inputIDs,
-                attentionMask: input.attentionMask
-            )
+        for chunk in chunks {
+            let embedding = try await embedder.embedDocument(chunk.text)
 
             embeddedChunks.append(
                 EmbeddedChunk(chunk: chunk, embedding: embedding)
             )
         }
 
-        let queryInput = tokenizer.encode(queryInstruction + query)
+        // Embed query
+        let queryEmbedding = try await embedder.embedQuery(query)
 
-        let queryEmbedding = try model.embed(
-            inputIDs: queryInput.inputIDs,
-            attentionMask: queryInput.attentionMask
-        )
-
+        // Retrieve Top-K
         let results = VectorSearch.search(
             queryEmbedding: queryEmbedding,
             chunks: embeddedChunks,
             topK: 3
         )
 
+        // Build context
         let context = ContextBuilder.build(from: results)
 
+        // Generate answer
         let generator = RAGGenerator()
 
-        let answer = try await generator.generate(question: query, context: context)
+        let response = try await generator.generate(
+            question: query,
+            context: context
+        )
 
-        /// Results
+        // Output
+        printResults(
+            query: query,
+            chunks: chunks,
+            embeddedChunks: embeddedChunks,
+            results: results,
+            response: response,
+            tokenCount: { tokenCounter.count($0) }
+        )
+
+    }
+
+    private static func printResults(
+        query: String,
+        chunks: [DocumentChunk],
+        embeddedChunks: [EmbeddedChunk],
+        results: [SearchResult],
+        response: RAGResponse,
+        tokenCount: (String) -> Int
+    ) {
+        print("Chunks")
+        print()
 
         for (index, chunk) in chunks.enumerated() {
             print("Chunk \(index)")
-            print("Tokens:", tokenizer.tokenCount(chunk.text))
+            print("Tokens:", tokenCount(chunk.text))
             print(chunk.text)
             print("---")
         }
@@ -104,9 +127,11 @@ enum RAGExample {
             print(result.chunk.text)
             print("---")
         }
-        
+
         print()
         print("Generated Answer")
-        print(answer)
+        print(response.answer)
+        print("Sufficient Context:", response.hasSufficientContext)
+
     }
 }

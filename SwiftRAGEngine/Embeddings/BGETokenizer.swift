@@ -31,6 +31,10 @@ final class BGETokenizer {
         )
     }
     
+    var maxTokens: Int {
+        maxSequenceLength
+    }
+    
     func tokenCount(_ text: String) -> Int {
         tokenizer.encode(text: text).count
     }
