@@ -21,15 +21,11 @@ struct RAGGenerator {
             instructions: """
                 Answer the user's question using only the provided context.
 
-                If the context contains enough information:
                 - Answer clearly and concisely.
-                - Set hasSufficientContext to true.
+                - Do not use outside knowledge.
+                - Do not include information that is not supported by the context.
 
-                If the context does not contain enough information:
-                - Set hasSufficientContext to false.
-                - Explain briefly that the provided context is insufficient.
-
-                Do not use outside knowledge.
+                If the provided context does not support an answer, state that the context is insufficient.
                 """
         )
     }
@@ -37,7 +33,7 @@ struct RAGGenerator {
     func generate(
         question: String,
         context: String
-    ) async throws -> RAGResponse {
+    ) async throws -> GeneratedAnswer {
         try checkAvailability()
         
         let prompt = """
@@ -51,7 +47,7 @@ struct RAGGenerator {
         
         let response = try await session.respond(
             to: prompt,
-            generating: RAGResponse.self
+            generating: GeneratedAnswer.self
         )
         
         return response.content
@@ -78,17 +74,8 @@ struct RAGGenerator {
 }
 
 @Generable
-struct RAGResponse {
+struct GeneratedAnswer {
     let answer: String
-    let hasSufficientContext: Bool
-    
-    var displayAnswer: String {
-        if hasSufficientContext {
-            return answer
-        }
-        
-        return "The provided documents don't contain enough information to answer this question."
-    }
 }
 
 enum RAGGeneratorError: Error {

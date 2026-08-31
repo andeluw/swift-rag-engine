@@ -9,11 +9,13 @@ import Foundation
 
 enum RAGExample {
     static func run() async throws {
-        //        let query = "Why does my Wi-Fi keep disconnecting?"
+        let query = "Why does my Wi-Fi keep disconnecting?"
         //        let query = "How does SwiftUI update the interface?"
         //        let query = "What nutrients are found in bananas?"
         //        let query = "How can database indexes improve performance?"
-        let query = "What is capital city of France?"
+
+        // Negative retrieval test
+        //                let query = "What is capital city of France?"
 
         // Load documents
         let documents = try loadSampleDocuments()
@@ -27,63 +29,28 @@ enum RAGExample {
         //        let embedder: any EmbeddingProvider = try await BGEEmbeddingProvider()
         //        let tokenCounter: any TokenCounter = try await BGETokenCounter()
 
-        // Chunk document
-        let chunker = TextChunker(
+        let retrievalPolicy = RetrievalPolicy(minimumScore: 0.30)
+
+        var engine = RAGEngine(
+            embedder: embedder,
+            tokenCounter: tokenCounter,
+            retrievalPolicy: retrievalPolicy,
             targetTokens: 100,
-            maxTokens: tokenCounter.maxTokens,
-            tokenCount: { tokenCounter.count($0) }
-        )
-
-        var chunks: [DocumentChunk] = []
-
-        for document in documents {
-            chunks.append(
-                contentsOf: chunker.chunk(
-                    text: document.text,
-                    source: document.source
-                )
-            )
-        }
-
-        // Embed chunks
-        var embeddedChunks: [EmbeddedChunk] = []
-
-        for chunk in chunks {
-            let embedding = try await embedder.embedDocument(chunk.text)
-
-            embeddedChunks.append(
-                EmbeddedChunk(chunk: chunk, embedding: embedding)
-            )
-        }
-
-        // Embed query
-        let queryEmbedding = try await embedder.embedQuery(query)
-
-        // Retrieve Top-K
-        let results = VectorSearch.search(
-            queryEmbedding: queryEmbedding,
-            chunks: embeddedChunks,
             topK: 3
         )
 
-        // Build context
-        let context = ContextBuilder.build(from: results)
+        // Index documents
+        try await engine.index(documents: documents)
 
-        // Generate answer
-        let generator = RAGGenerator()
-
-        let response = try await generator.generate(
-            question: query,
-            context: context
-        )
+        // Ask
+        let result = try await engine.ask(query)
 
         // Output
         printResults(
             query: query,
-            chunks: chunks,
-            embeddedChunks: embeddedChunks,
-            results: results,
-            response: response,
+            chunks: engine.chunks,
+            embeddedChunks: engine.embeddedChunks,
+            result: result,
             tokenCount: { tokenCounter.count($0) }
         )
 
@@ -123,8 +90,7 @@ enum RAGExample {
         query: String,
         chunks: [DocumentChunk],
         embeddedChunks: [EmbeddedChunk],
-        results: [SearchResult],
-        response: RAGResponse,
+        result: RAGResult,
         tokenCount: (String) -> Int
     ) {
         print("Chunks")
@@ -132,6 +98,7 @@ enum RAGExample {
 
         for (index, chunk) in chunks.enumerated() {
             print("Chunk \(index)")
+            print("Source:", chunk.source)
             print("Tokens:", tokenCount(chunk.text))
             print(chunk.text)
             print("---")
@@ -148,17 +115,18 @@ enum RAGExample {
         print("Query:", query)
         print()
 
-        for (index, result) in results.enumerated() {
+        for (index, searchResult) in result.retrievedResults.enumerated() {
             print("Result \(index + 1)")
-            print("Score:", result.score)
-            print(result.chunk.text)
+            print("Score:", searchResult.score)
+            print("Source:", searchResult.chunk.source)
+            print(searchResult.chunk.text)
             print("---")
         }
 
         print()
         print("Generated Answer")
-        print(response.displayAnswer)
-        print("Sufficient Context:", response.hasSufficientContext)
+        print(result.answer)
+        print("Sufficient Context:", result.hasSufficientContext)
 
     }
 }
